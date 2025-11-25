@@ -7,26 +7,32 @@ import os
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
 
-load_dotenv()
-API_KEY = os.getenv('API_KEY')
-SERVER_PREFIX = os.getenv('SERVER_PREFIX')
-extract_timestamp = dt.now().strftime('%Y-%m-%dT%H-%M-%S')
+def extract(start_date, before_date): 
 
-try:
-  client = MailchimpMarketing.Client()
-  client.set_config({
-    "api_key": API_KEY,
-    "server": SERVER_PREFIX
-  })
+  load_dotenv()
+  API_KEY = os.getenv('API_KEY')
+  SERVER_PREFIX = os.getenv('SERVER_PREFIX')
+  extract_timestamp = dt.now().strftime('%Y-%m-%dT%H-%M-%S')
 
-  response = client.campaigns.list(
-     since_create_time = '2025-10-01T00:00:00+00:00'
-  )
+  try:
+    client = MailchimpMarketing.Client()
+    client.set_config({
+      "api_key": API_KEY,
+      "server": SERVER_PREFIX
+    })
 
-  print('Connection Success')
-except ApiClientError as error:
-  print("Error: {}".format(error.text))
+    date_since = f"{start_date}T00:00:00+00:00"
+    date_end = f"{before_date}T23:59:59+00:00"
 
-filepath = 'data/mailchimp_campaigns_' + extract_timestamp + '.json'
-with open(filepath,'w') as file:
-    json.dump(response,file)
+    response = client.campaigns.list(
+      since_create_time = date_since
+      , before_create_time = date_end
+    )
+
+    print('Connection Success')
+  except ApiClientError as error:
+    print("Error: {}".format(error.text))
+
+  filepath = 'data/mailchimp_campaigns_' + extract_timestamp + '.json'
+  with open(filepath,'w') as file:
+      json.dump(response,file)
