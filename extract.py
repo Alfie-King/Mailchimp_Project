@@ -16,12 +16,15 @@ from dotenv import load_dotenv
 import os
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
+from datetime import timedelta, date
 
 # Adding extract function so that the code can be run from 1 script
-def extract(start_date, before_date): 
+def extract(): 
+
+  start_date = date.today()
+  before_date = date.today()-timedelta(days=90)
 
   logger.info("Starting extract function")
-  logger.info(f"Parameters received: start_date={start_date}, before_date={before_date}")
 
   # Loading the .env data to keep private
   load_dotenv()
