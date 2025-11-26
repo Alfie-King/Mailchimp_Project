@@ -20,7 +20,7 @@ lists_extracts()
 print('extract done')
 
 print('running load')
-load()
+# load()
 print('load done')
 
 print('script finished')

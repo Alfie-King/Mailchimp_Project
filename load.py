@@ -22,12 +22,20 @@ def load():
             for f in files:
                 filename = f"{dir}/{f}"
                 s3filename = f
-                try:
-                    s3_client.upload_file(filename, bucket, f"{s3filename}")
-                    os.remove(filename)
-                    print(f"{filename} deleted")
-                except Exception as e:
-                    print(f"Error processing {filename}: {e}")
+                if "campaigns" in filename:
+                    try:
+                        s3_client.upload_file(filename, bucket, f"campaigns/{s3filename}")
+                        os.remove(filename)
+                        print(f"{filename} deleted")
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
+                elif "list" in filename:
+                    try:
+                        s3_client.upload_file(filename, bucket, f"list/{s3filename}")
+                        os.remove(filename)
+                        print(f"{filename} deleted")
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
         else:
             print("No files to upload")
     except Exception as e:

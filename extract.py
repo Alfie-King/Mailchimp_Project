@@ -11,7 +11,6 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-import json 
 from dotenv import load_dotenv
 import os
 import mailchimp_marketing as MailchimpMarketing
@@ -21,8 +20,8 @@ from datetime import timedelta, date
 # Adding extract function so that the code can be run from 1 script
 def campaigns_extract(): 
 
-  start_date = date.today()
-  before_date = date.today()-timedelta(days=90)
+  start_date = date.today()-timedelta(days=90)
+  before_date = date.today()
 
   logger.info("Starting extract function")
 
@@ -59,10 +58,24 @@ def campaigns_extract():
     print('Connection Success')
 
     # Downloads the data from the API to the data folder to then be put into S3 by the load function
-    filepath = 'data/mailchimp_campaigns_' + extract_timestamp + '.json'
-    with open(filepath,'w') as file:
-        json.dump(response,file)
+    import json
+    import pandas as pd
+
+    # 1) Save the live API response to a timestamped file
+    filepath = f"data/mailchimp_campaigns_{extract_timestamp}.json"
+    with open(filepath, "w") as f:
+        json.dump(response, f)
+
     logger.info(f"Data written to {filepath}")
+
+    # 2) Load the same file and normalize the campaigns list into a DataFrame
+    with open(filepath) as f:
+        data = json.load(f)
+
+    campaigns = data.get("campaigns", [])
+    df = pd.json_normalize(campaigns)
+
+    logger.info(f"Extracted {len(df)} campaigns into DataFrame")
 
   # If connection to the API is bad it outputs this error        
   except ApiClientError as error:
