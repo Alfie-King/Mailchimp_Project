@@ -9,12 +9,14 @@ import boto3
 import sys
 from dotenv import load_dotenv 
 
-from extract import extract
+from extract import campaigns_extract
+from lists_extract import lists_extracts
 from load import load
 print('loading functions')
 
 print('running extract')
-extract()
+campaigns_extract()
+lists_extracts()
 print('extract done')
 
 print('running load')

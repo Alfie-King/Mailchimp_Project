@@ -18,8 +18,7 @@ import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
 from datetime import timedelta, date
 
-# Adding extract function so that the code can be run from 1 script
-def campaigns_extract(): 
+def lists_extracts(): 
 
   start_date = date.today()
   before_date = date.today()-timedelta(days=90)
@@ -47,19 +46,13 @@ def campaigns_extract():
     })
     logger.info("Mailchimp client configured")
 
-    date_since = f"{start_date}T00:00:00+00:00"
-    date_end = f"{before_date}T23:59:59+00:00"
-    logger.info(f"Looking for campaigns between {start_date} to {before_date}")
-
-    response = client.campaigns.list(
-      since_create_time = date_since
-      , before_create_time = date_end
+    response = client.lists.get_all_lists(
     )
     logger.info("API request successful")
     print('Connection Success')
 
     # Downloads the data from the API to the data folder to then be put into S3 by the load function
-    filepath = 'data/mailchimp_campaigns_' + extract_timestamp + '.json'
+    filepath = 'data/mailchimp_lists_' + extract_timestamp + '.json'
     with open(filepath,'w') as file:
         json.dump(response,file)
     logger.info(f"Data written to {filepath}")
@@ -69,4 +62,3 @@ def campaigns_extract():
     logger.error(f"Mailchimp API error: {error.text}")
   except Exception as e:
      logger.exception(f"Unexpected error occured: {str(e)}")
-
