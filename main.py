@@ -11,12 +11,14 @@ from dotenv import load_dotenv
 
 from extract import campaigns_extract
 from lists_extract import lists_extracts
+from recipients_extract import recipients_extract
 from load import load
 print('loading functions')
 
 print('running extract')
 campaigns_extract()
 lists_extracts()
+# recipients_extract()
 print('extract done')
 
 print('running load')

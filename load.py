@@ -36,6 +36,13 @@ def load():
                         print(f"{filename} deleted")
                     except Exception as e:
                         print(f"Error processing {filename}: {e}")
+                elif "recipients" in filename:
+                    try:
+                        s3_client.upload_file(filename, bucket, f"recipients/{s3filename}")
+                        os.remove(filename)
+                        print(f"{filename} deleted")
+                    except Exception as e:
+                        print(f"Error processing {filename}: {e}")
         else:
             print("No files to upload")
     except Exception as e:
