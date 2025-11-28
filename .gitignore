@@ -1,4 +1,6 @@
 data/
+logs/
+recipients_extract.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
